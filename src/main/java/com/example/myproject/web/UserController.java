@@ -1,14 +1,19 @@
 package com.example.myproject.web;
 
 import com.example.myproject.domain.User;
+import com.example.myproject.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.*;
 
+@Data
+@AllArgsConstructor
 @Api(tags = "用户管理")
 @RestController
 @RequestMapping(value = "/users")
@@ -16,6 +21,9 @@ import java.util.*;
 public class UserController {
 
   static Map<Long, User> users = Collections.synchronizedMap(new HashMap<Long, User>());
+
+  private UserService userService;
+
 
   @GetMapping("/")
   @ApiOperation(value = "获取用户列表")
@@ -28,8 +36,10 @@ public class UserController {
 //  @PostMapping(value = "", produces = "application/json; charset=utf-8")
   @ApiOperation(value = "创建用户", notes = "根据User对象创建用户")
   public String postUser(@Valid @RequestBody User user) {
-    users.put(user.getId(), user);
-    return "success";
+//    users.put(user.getId(), user);
+//    return "success";
+    int result = userService.create(user.getName(), user.getAge());
+    return String.valueOf(result);
   }
 
   @GetMapping("/{id}")
